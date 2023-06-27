@@ -1,0 +1,27 @@
+body {
+
+  .color-nav {
+    background-color: #712cf9;
+
+    a {
+      color: #f0f8ff !important;
+    }
+  }
+
+  .modal-add {
+    .modal-add-label {
+      background-color: #712cf9;
+      color: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .modal-add-input {
+      border-radius: 0px 5px 5px 0px;
+      border: 2px solid #712cf9;
+    }
+  }
+
+}
