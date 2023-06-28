@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import Table from 'react-bootstrap/Table'
-import { fetchAllUser, addUser } from '../services/UserServices'
+import { fetchAllUser, addUser, editUser } from '../services/UserServices'
 import ResponsivePagination from 'react-responsive-pagination';
-import AddUserButton from './AddUserButton';
+import UserModalForm from './UserModalForm';
+import { Button } from 'react-bootstrap';
 
 const Users = (props) => {
 
@@ -39,8 +40,22 @@ const Users = (props) => {
         setUsers([...users, user])
     }, [users])
 
+    const handleEditUser = useCallback((user) => {
+
+        editUser(user)
+
+        const editUsers = [...users].map((u) => {
+            if (u.id === user.id) {
+                u = user
+            }
+            return u;
+        })
+
+        setUsers(editUsers)
+    }, [users])
+
     return <div className='mt-5'>
-        <AddUserButton onAddUser={handleAddUser} />
+        <UserModalForm formName="Add New User" buttonName="Add New User" onAddUser={handleAddUser} />
         <Table striped="columns" responsive>
             <thead>
                 <tr>
@@ -49,6 +64,7 @@ const Users = (props) => {
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +76,10 @@ const Users = (props) => {
                             <td>{user.first_name}</td>
                             <td>{user.last_name}</td>
                             <td>{user.email}</td>
+                            <td>
+                                <UserModalForm formName={`Edit User (ID:${user.id})`} buttonName="Edit" editUser={user} onEditUser={handleEditUser} />
+                                <Button className='mx-1 bg-base-color'>Delete</Button>
+                            </td>
                         </tr>
                     })
                 }

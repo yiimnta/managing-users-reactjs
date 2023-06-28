@@ -1,7 +1,12 @@
 body {
+  $base-color: #712cf9;
+
+  .bg-base-color {
+    background-color: $base-color !important;
+  }
 
   .color-nav {
-    background-color: #712cf9;
+    background-color: $base-color;
 
     a {
       color: #f0f8ff !important;
@@ -10,7 +15,7 @@ body {
 
   .modal-add {
     .modal-add-label {
-      background-color: #712cf9;
+      background-color: $base-color;
       color: #f0f8ff;
       display: flex;
       justify-content: center;
@@ -20,7 +25,7 @@ body {
 
     .modal-add-input {
       border-radius: 0px 5px 5px 0px;
-      border: 2px solid #712cf9;
+      border: 2px solid $base-color;
     }
   }
 

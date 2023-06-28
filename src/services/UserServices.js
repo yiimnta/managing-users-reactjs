@@ -9,7 +9,11 @@ const fetchAllUserWithPage = (page = 1) => {
 }
 
 const addUser = (user) => {
-    return client.post(`${user.firstname} ${user.lastname}`, `Informatik`)
+    return client.post("/users", { name: `${user.firstname} ${user.lastname}`, job: `Informatik` })
 }
 
-export { fetchAllUser, addUser, fetchAllUserWithPage }
+const editUser = (user) => {
+    return client.put("/users", { name: `${user.firstname} ${user.lastname}`, job: `Informatik` })
+}
+
+export { fetchAllUser, addUser, fetchAllUserWithPage, editUser }
