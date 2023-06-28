@@ -36,7 +36,6 @@ const Users = (props) => {
         if (page > totalP) {
             setPage(() => totalP)
         }
-
         const start = (page - 1) * recordNumber
         let showUsers = [...users].slice(start, start + recordNumber)
         setShowUsers(showUsers)
