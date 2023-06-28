@@ -1,16 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap'
 import { toast } from 'react-toastify'
+import { useForm } from "react-hook-form"
+import { DevTool } from '@hookform/devtools'
 
 function UserModalForm({ formName, buttonName, onAddUser, editUser, onEditUser }) {
 
     const [show, setShow] = useState(false)
-    const [firstname, setFirstname] = useState("")
-    const [lastname, setLastname] = useState("")
-    const [email, setEmail] = useState("")
-
     const [avatarIMG, setAvatarIMG] = useState()
-    const avatarRef = useRef()
+
+    const form = useForm({
+        defaultValues: {
+            firstname: "",
+            lastname: "",
+            email: "",
+            avatar: undefined
+        }
+    })
+
+    const { register, control, handleSubmit, formState, reset, setValue } = form
+    const { errors } = formState
+    const avatarRef = useRef(null)
+    const avatarReg = register("avatar")
 
     const handleShow = () => setShow(true)
     const handleClose = () => setShow(false)
@@ -21,22 +32,27 @@ function UserModalForm({ formName, buttonName, onAddUser, editUser, onEditUser }
 
     const handleChangeAvatar = () => {
         const file = avatarRef.current.files[0];
-        file.review = URL.createObjectURL(file)
-        setAvatarIMG(file)
+        setAvatarIMG(URL.createObjectURL(file))
     }
 
-    const handleSubmit = () => {
-        onAddUser({
-            first_name: firstname,
-            last_name: lastname,
-            email,
-            avatar: (avatarIMG ? avatarIMG.review : "")
+    const onSubmit = (data) => {
+        onAddUser && onAddUser({
+            first_name: data.firstname,
+            last_name: data.lastname,
+            email: data.email,
+            avatar: (avatarIMG ? avatarIMG : "")
         })
 
-        setFirstname('')
-        setLastname('')
-        setEmail('')
-        setAvatarIMG(undefined)
+        onEditUser && onEditUser({
+            id: editUser.id,
+            first_name: data.firstname,
+            last_name: data.lastname,
+            email: data.email,
+            avatar: (avatarIMG ? avatarIMG : "")
+        })
+
+        reset()
+        setAvatarIMG("")
         handleClose()
 
         toast.success('🦄 Successfully', {
@@ -49,20 +65,15 @@ function UserModalForm({ formName, buttonName, onAddUser, editUser, onEditUser }
     }
 
     useEffect(() => {
-
         if (editUser) {
-            setFirstname(editUser.first_name)
-            setLastname(editUser.last_name)
-            setEmail(editUser.email)
-            setAvatarIMG({ review: editUser.avatar })
+            setValue("firstname", editUser.first_name)
+            setValue("lastname", editUser.last_name)
+            setValue("email", editUser.email)
+            setValue("avatar", editUser.avatar)
+            setAvatarIMG(editUser.avatar)
         }
-    }, [])
+    }, [editUser, setValue])
 
-    // useEffect(() => {
-    //     return () => {
-    //         avatarIMG && URL.revokeObjectURL(avatarIMG.review)
-    //     }
-    // }, [avatarIMG])
     return (
         <React.Fragment>
             <Button style={{ background: "#712cf9", color: "#f0f8ff" }} onClick={handleShow}>
@@ -73,63 +84,77 @@ function UserModalForm({ formName, buttonName, onAddUser, editUser, onEditUser }
                     <Modal.Title>{formName}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modal-add'>
-                    <Form>
-                        <Form.Group className="mb-3" controlId="add.firstname">
+                    <Form noValidate>
+                        <Form.Group className="mb-3" controlId="firstname">
                             <Container>
                                 <Row>
                                     <Col xs={4} className='p-0'>
-                                        <Form.Label className='modal-add-label'>First Name</Form.Label>
+                                        <Form.Label className={`modal-add-label ${errors.firstname ? "bg-error-color" : "bg-base-color"}`}>First Name</Form.Label>
                                     </Col>
                                     <Col className='p-0'>
                                         <Form.Control
-                                            className='modal-add-input'
+                                            className={`${errors.firstname ? "error-input" : "form-input"}`}
                                             type="text"
                                             placeholder="First Name"
                                             autoFocus
-                                            value={firstname}
-                                            onChange={(e) => setFirstname(e.target.value)}
-                                            required
+                                            {...register("firstname", {
+                                                required: "First Name is required"
+                                            })}
                                         />
                                     </Col>
                                 </Row>
+                                <Form.Control.Feedback className='d-block' type='invalid'>
+                                    {errors.firstname?.message}
+                                </Form.Control.Feedback>
                             </Container>
+
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="add.lastname">
+                        <Form.Group className="mb-3" controlId="lastname">
                             <Container>
                                 <Row>
                                     <Col xs={4} className='p-0'>
-                                        <Form.Label className='modal-add-label'>Last Name</Form.Label>
+                                        <Form.Label className={`modal-add-label ${errors.lastname ? "bg-error-color" : "bg-base-color"}`}>Last Name</Form.Label>
                                     </Col>
                                     <Col className='p-0'>
                                         <Form.Control
-                                            className='modal-add-input'
+                                            className={`${errors.lastname ? "error-input" : "form-input"}`}
                                             type="text"
                                             placeholder="Last Name"
-                                            value={lastname}
-                                            onChange={(e) => setLastname(e.target.value)}
-                                            required
+                                            {...register("lastname", {
+                                                required: "Last Name is required"
+                                            })}
                                         />
                                     </Col>
                                 </Row>
+                                <Form.Control.Feedback className='d-block' type='invalid'>
+                                    {errors.lastname?.message}
+                                </Form.Control.Feedback>
                             </Container>
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="add.email">
+                        <Form.Group className="mb-3" controlId="email">
                             <Container>
                                 <Row>
                                     <Col xs={4} className='p-0'>
-                                        <Form.Label className='modal-add-label'>Email</Form.Label>
+                                        <Form.Label className={`modal-add-label ${errors.email ? "bg-error-color" : "bg-base-color"}`}>Email</Form.Label>
                                     </Col>
                                     <Col className='p-0'>
                                         <Form.Control
-                                            className='modal-add-input'
+                                            className={`${errors.email ? "error-input" : "form-input"}`}
                                             type="email"
                                             placeholder="name@example.com"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
+                                            {...register("email", {
+                                                required: "Email is required",
+                                                pattern: {
+                                                    value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                                                    message: "Invalid email format"
+                                                }
+                                            })}
                                         />
                                     </Col>
                                 </Row>
+                                <Form.Control.Feedback className='d-block' type='invalid'>
+                                    {errors.email?.message}
+                                </Form.Control.Feedback>
                             </Container>
                         </Form.Group>
                         <Form.Group
@@ -137,11 +162,14 @@ function UserModalForm({ formName, buttonName, onAddUser, editUser, onEditUser }
                             controlId="add.avatar"
                         >
                             <div className='d-flex flex-row align-items-center'>
-                                <Form.Control type='file' accept='image/*' ref={avatarRef} className='d-none' onChange={handleChangeAvatar} />
+                                <Form.Control type='file' accept='image/*' className='d-none' {...avatarReg} ref={(e) => {
+                                    avatarReg.ref(e)
+                                    avatarRef.current = e
+                                }} onChange={handleChangeAvatar} />
                                 <Button style={{ background: "#712cf9", color: "#f0f8ff", height: "fit-content" }} onClick={handleAddAvatar}>
                                     Click to add Avatar
                                 </Button>
-                                {avatarIMG && <img src={avatarIMG.review} alt="logo" height="100px" className='mx-3' />}
+                                {avatarIMG && <img src={avatarIMG} alt="logo" height="100px" className='mx-3' />}
                             </div>
                         </Form.Group>
                     </Form>
@@ -150,12 +178,13 @@ function UserModalForm({ formName, buttonName, onAddUser, editUser, onEditUser }
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button style={{ background: "#712cf9", color: "#f0f8ff" }} onClick={handleSubmit}>
+                    <Button style={{ background: "#712cf9", color: "#f0f8ff" }} onClick={handleSubmit(onSubmit)} >
                         {buttonName}
                     </Button>
                 </Modal.Footer>
             </Modal >
-        </React.Fragment>
+            <DevTool control={control} />
+        </React.Fragment >
     )
 }
 

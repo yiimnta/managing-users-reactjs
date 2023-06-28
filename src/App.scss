@@ -1,9 +1,15 @@
 body {
   $base-color: #712cf9;
+  $error-color: #f92c65;
 
   .bg-base-color {
     background-color: $base-color !important;
   }
+
+  .bg-error-color {
+    background-color: $error-color !important;
+  }
+
 
   .color-nav {
     background-color: $base-color;
@@ -23,9 +29,14 @@ body {
       height: 100%;
     }
 
-    .modal-add-input {
+    .form-input {
       border-radius: 0px 5px 5px 0px;
       border: 2px solid $base-color;
+    }
+
+    .error-input {
+      border-radius: 0px 5px 5px 0px;
+      border: 2px solid $error-color;
     }
   }
 
