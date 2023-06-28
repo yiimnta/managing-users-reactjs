@@ -20,13 +20,17 @@ The app will run in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 # Images
-page interface
+### page interface
+
 ![page interface](./imgs/img_01.png)
 
-form to create/edit a user
+### form to create/edit a user
+
 ![form to create a user](./imgs/img_02.png)
 ![form to edit a user](./imgs/img_03.png)
 
-using React toastify to inform a action
+
+### using React toastify to inform a action
+
 ![React toast to Inform](./imgs/img_04.png)
 
