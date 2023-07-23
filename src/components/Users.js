@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 const Users = (props) => {
 
-    const [page, setPage] = useState()
+    const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState()
     const [users, setUsers] = useState([])
     const [showUsers, setShowUsers] = useState([])
@@ -25,11 +25,11 @@ const Users = (props) => {
             }
         }
         getUsers()
-        setPage(1)
     }, [])
 
 
     useEffect(() => {
+        if (users.length === 0) return
         let totalP = Math.ceil(users.length / recordNumber)
         setTotalPages(totalP)
 
@@ -37,8 +37,8 @@ const Users = (props) => {
             setPage(() => totalP)
         }
         const start = (page - 1) * recordNumber
-        let showUsers = [...users].slice(start, start + recordNumber)
-        setShowUsers(showUsers)
+        let showUsersdata = [...users].slice(start, start + recordNumber)
+        setShowUsers(showUsersdata)
     }, [page, recordNumber, users])
 
 
@@ -77,7 +77,6 @@ const Users = (props) => {
             theme: "dark",
         });
     }
-
 
     return <div className='mt-5'>
         <UserModalForm formName="Add New User" buttonName="Add New User" onAddUser={handleAddUser} />
